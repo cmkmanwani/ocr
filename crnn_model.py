@@ -15,7 +15,7 @@ from keras.layers import Dense, Activation
 
 def ctc_lambda_func(args):
     y_true, y_pred, input_length, label_length = args
-    y_pred = y_pred[:, 2:, :]
+    # y_pred = y_pred[:, 3:-3, :]
     return K.ctc_batch_cost(y_true, y_pred, input_length, label_length)
 
 
@@ -59,28 +59,27 @@ def create_model():
     reshape = Reshape((26, 512), input_shape=(26, 1, 512))(conv_7)
 
     # RNN
-
     bi_lstm_1 = Bidirectional(LSTM(256, input_shape=(26, 512),
-                              return_sequences=True, name='bi_lstm1'))(reshape)
-    bi_lstm_2 = Bidirectional(LSTM(256, input_shape=(26, 512),
+                              return_sequences=True, name='bi_lstm1'),
+                              merge_mode='sum')(reshape)
+    bi_lstm_2 = Bidirectional(LSTM(256, input_shape=(26, 256),
                               return_sequences=True,
                               name='bi_lstm2'))(bi_lstm_1)
 
     # RNN to softmax Activations
-    dense = TimeDistributed(Dense(classes, activation='sigmoid',
-                            name='dense'))(bi_lstm_2)
+    # dense = TimeDistributed(Dense(classes, activation='sigmoid',
+    #                         name='dense'))(bi_lstm_2)
+    dense = Dense(classes, activation='sigmoid',
+                  name='dense')(bi_lstm_2)
     y_pred = Activation('softmax', name='final_softmax')(dense)
 
     # Input specifications for CTC Function
     y_true = Input(name='ground_truth', shape=[max_string_len], dtype='int64')
     input_length = Input(name='input_length', shape=[1], dtype='int64')
     label_length = Input(name='label_length', shape=[1], dtype='int64')
-    print('Shape', y_true.get_shape().as_list())
+
     loss_out = Lambda(ctc_lambda_func, output_shape=(1,),
                       name='ctc')([y_true, y_pred, input_length, label_length])
-
-    # Loss function algo
-    # sgd = SGD(lr=0.02, decay=1e-6, momentum=0.9, nesterov=True, clipnorm=5)
 
     crnn_model_train = Model(inputs=[img_input, y_true, input_length,
                              label_length], outputs=loss_out)

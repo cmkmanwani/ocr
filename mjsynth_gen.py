@@ -31,7 +31,7 @@ class MJSynthData(Sequence):
                                                    file_name))
                             for file_name in
                             self.image_filenames[start_idx:end_idx]])
-        batch_y = np.array([encode(label) 
+        batch_y = np.array([encode(label)
                             for label in self.labels[start_idx:end_idx]])
 
         input_length = np.ones(size) * time_steps
