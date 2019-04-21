@@ -117,4 +117,4 @@ def lex_drive(dict_path,word):
         lines = filename.readlines()
     lines = [line.rstrip('\n') for line in lines]
     model = train(lines)
-    return correct(word,model)
+    return correct(word.lower(),model)
