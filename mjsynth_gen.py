@@ -24,7 +24,7 @@ class MJSynthData(Sequence):
 
     def __getitem__(self, idx):
         start_idx = idx * self.batch_size
-        end_idx = min((idx+1)*self.batch_size, self.dataset_size)
+        end_idx = min((idx+1) * self.batch_size, self.dataset_size)
         size = end_idx - start_idx
 
         batch_x = np.array([get_image(os.path.join(self.data_folder,

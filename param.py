@@ -1,4 +1,6 @@
-letter_string = u'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
+letter_string = '0123456789' \
+                + 'abcdefghijklmnopqrstuvwxyz' \
+                + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ '
 
 characters = [letter for letter in letter_string]
 classes = len(characters) + 1
@@ -14,7 +16,7 @@ img_input_shape = (img_w, img_h, 1)
 max_string_len = 16
 
 # Training specific parameters
-time_steps = 26
+time_steps = 24
 epochs = 5
-batch_size = 64
-validation_batch_size = 256
+batch_size = 256
+validation_batch_size = 64

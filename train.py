@@ -1,7 +1,7 @@
 import sys
 from mjsynth_gen import MJSynthData
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.optimizers import Adadelta
+from keras.optimizers import Adadelta, SGD
 from crnn_model import get_model
 from param import batch_size, validation_batch_size, epochs
 
@@ -27,7 +27,7 @@ def main(args):
         period=1)
 
     ada = Adadelta(rho=0.9)
-    # sgd = SGD(lr=0.02, decay=1e-6, momentum=0.9, nesterov=True, clipnorm=5)
+    sgd = SGD(lr=0.02, decay=1e-6, momentum=0.9, nesterov=True, clipnorm=5)
     model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer=ada)
 
     training_gen = MJSynthData(args[0], args[1], batch_size)
@@ -41,7 +41,8 @@ def main(args):
                         validation_data=validation_gen,
                         validation_steps=int(validation_gen.dataset_size
                                              // validation_batch_size),
-                        max_queue_size=32)
+                        max_queue_size=32
+                        )
 
 
 if __name__ == "__main__":

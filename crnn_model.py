@@ -7,7 +7,7 @@ from keras.layers import ZeroPadding2D
 from keras.layers import BatchNormalization, Reshape
 from keras.models import Model
 from keras.layers import LSTM, Lambda
-from keras.layers import TimeDistributed
+# from keras.layers import TimeDistributed
 from keras.layers import Bidirectional
 from keras.layers import Dense, Activation
 # model file
@@ -15,7 +15,7 @@ from keras.layers import Dense, Activation
 
 def ctc_lambda_func(args):
     y_true, y_pred, input_length, label_length = args
-    # y_pred = y_pred[:, 3:-3, :]
+    y_pred = y_pred[:, 1:-1, :]
     return K.ctc_batch_cost(y_true, y_pred, input_length, label_length)
 
 
@@ -60,9 +60,9 @@ def create_model():
 
     # RNN
     bi_lstm_1 = Bidirectional(LSTM(256, input_shape=(26, 512),
-                              return_sequences=True, name='bi_lstm1'),
-                              merge_mode='sum')(reshape)
-    bi_lstm_2 = Bidirectional(LSTM(256, input_shape=(26, 256),
+                              return_sequences=True,
+                              name='bi_lstm1'))(reshape)
+    bi_lstm_2 = Bidirectional(LSTM(256, input_shape=(26, 512),
                               return_sequences=True,
                               name='bi_lstm2'))(bi_lstm_1)
 

@@ -1,6 +1,8 @@
 import numpy as np
 import imageio as io
 import imutils
+import tensorflow as tf
+from keras.backend import ctc_decode, get_value
 from PIL import Image
 from param import alphabet, rev_alphabet, max_string_len
 
@@ -13,7 +15,6 @@ def encode(label):
     return ret.astype(int)
 
 
-# Reverse translation of numerical classes back to characters
 def decode(encoded_label):
     len_alphabet = len(rev_alphabet)
     ret = []
@@ -55,7 +56,6 @@ def activation_to_label(y_pred):
 def get_image(img_filename):
     img = io.imread(img_filename)
     img = np.array(img)
-    img = (img-128) / 128
     return np.expand_dims(img, axis=-1)
 
 
