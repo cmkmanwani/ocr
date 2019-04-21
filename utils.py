@@ -5,7 +5,7 @@ import tensorflow as tf
 from keras.backend import ctc_decode, get_value
 from PIL import Image
 from param import alphabet, rev_alphabet, max_string_len
-
+from lexicon_driven import train,correct
 
 def encode(label):
     len_label = len(label)
@@ -111,3 +111,10 @@ def character_error(filename):
             j+=1
     error = incorrect/total
     return error
+
+def lex_drive(dict_path,word):
+    with open(dict_path,'r') as filename:
+        lines = filename.readlines()
+    lines = [line.rstrip('\n') for line in lines]
+    model = train(lines)
+    return correct(word,model)
